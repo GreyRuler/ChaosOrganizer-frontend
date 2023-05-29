@@ -302,6 +302,7 @@ export default class ChatView {
 			});
 			return await response.json();
 		} catch (error) {
+			// eslint-disable-next-line no-alert
 			alert(`Ошибка:${error}`);
 		}
 	}
