@@ -111,7 +111,7 @@ export default class ChatView {
 		const chat = this.element.querySelector(
 			ChatView.selectorChat,
 		);
-		const ws = new WebSocket('wss://chaosorganizer.onrender.com:3030/ws');
+		const ws = new WebSocket('wss://chaosorganizer.onrender.com/ws');
 		const importBtn = this.element.querySelector(ChatView.selectorImportBtn);
 		const exportBtn = this.element.querySelector(ChatView.selectorExportBtn);
 		const searchBtn = this.element.querySelector(ChatView.selectorSearchBtn);
