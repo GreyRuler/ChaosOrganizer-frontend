@@ -194,6 +194,7 @@ export default class ChatView {
 				if (!messages.length) return;
 				this.searchMessagesChat.innerHTML = '';
 				messages.forEach((message) => {
+					console.log(message);
 					this.addMessageToChatAndScroll(this.searchMessagesChat, message);
 				});
 				this.messagesChat.classList.add('d-none');
