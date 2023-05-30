@@ -148,7 +148,7 @@ class ChatView {
       const files = [...event.dataTransfer.files];
       const formData = this.prepareFiles(files);
       const {
-        messages
+        result: messages
       } = await this.sendFiles(formData);
       messages.forEach(message => {
         this.addMessageToChatAndScroll(this.messagesChat, message);
