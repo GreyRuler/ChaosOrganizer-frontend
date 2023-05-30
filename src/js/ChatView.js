@@ -111,7 +111,7 @@ export default class ChatView {
 		const chat = this.element.querySelector(
 			ChatView.selectorChat,
 		);
-		const ws = new WebSocket('wss://chaosorganizer.onrender.com/ws');
+		const ws = new WebSocket(`${window.hostWS}/ws`);
 		const importBtn = this.element.querySelector(ChatView.selectorImportBtn);
 		const exportBtn = this.element.querySelector(ChatView.selectorExportBtn);
 		const searchBtn = this.element.querySelector(ChatView.selectorSearchBtn);
@@ -174,21 +174,21 @@ export default class ChatView {
 
 		importBtn.addEventListener('change', async () => {
 			const formData = this.prepareFiles([...importBtn.files]);
-			await fetch('https://chaosorganizer.onrender.com/import', {
+			await fetch(`${window.host}/import`, {
 				method: 'POST',
 				body: formData,
 			});
 		});
 		exportBtn.addEventListener('click', async () => {
 			const filename = 'chaos-organizer-history.json';
-			const response = await fetch('https://chaosorganizer.onrender.com/export');
+			const response = await fetch(`${window.host}/export`);
 			const json = await response.json();
 			this.downloadObjectAsJson(json, filename);
 		});
 		searchBtn.addEventListener('click', () => searchInput.classList.toggle('show'));
 		searchInput.addEventListener('input', async () => {
 			if (searchInput.value.trim()) {
-				const response = await fetch(`https://chaosorganizer.onrender.com/search/${searchInput.value}`);
+				const response = await fetch(`${window.host}/search/${searchInput.value}`);
 				const json = await response.json();
 				const { messages } = json;
 				if (!messages.length) return;
@@ -214,7 +214,7 @@ export default class ChatView {
 				target.classList.toggle('active');
 			}
 			if (favouritesBtn.classList.contains('active')) {
-				const response = await fetch('https://chaosorganizer.onrender.com/favourites');
+				const response = await fetch(`${window.host}/favourites`);
 				const json = await response.json();
 				const { messages } = json;
 				this.favouritesMessagesChat.innerHTML = '';
@@ -239,7 +239,7 @@ export default class ChatView {
 		document.addEventListener('click', async (event) => {
 			const { target } = event;
 			if (target.classList.contains('favourites-message')) {
-				await fetch(`https://chaosorganizer.onrender.com/favourites/${target.dataset.id}`, {
+				await fetch(`${window.host}/favourites/${target.dataset.id}`, {
 					method: 'POST',
 				});
 			}
@@ -275,7 +275,7 @@ export default class ChatView {
 	}
 
 	async loadMessages() {
-		const response = await fetch(`https://chaosorganizer.onrender.com/messages/${this.count}`);
+		const response = await fetch(`${window.host}/messages/${this.count}`);
 		const { messages, noMoreData } = await response.json();
 		if (noMoreData) return;
 		this.count += 10;
@@ -295,7 +295,7 @@ export default class ChatView {
 	// eslint-disable-next-line consistent-return,class-methods-use-this
 	async sendFiles(formData) {
 		try {
-			const response = await fetch('https://chaosorganizer.onrender.com/upload', {
+			const response = await fetch(`${window.host}/upload`, {
 				method: 'POST',
 				body: formData,
 			});
