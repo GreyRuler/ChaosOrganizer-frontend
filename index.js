@@ -104,7 +104,7 @@ class ChatView {
   }
   registerEvents() {
     const chat = this.element.querySelector(ChatView.selectorChat);
-    const ws = new WebSocket('wss://chaosorganizer.onrender.com/ws');
+    const ws = new WebSocket(`${window.hostWS}/ws`);
     const importBtn = this.element.querySelector(ChatView.selectorImportBtn);
     const exportBtn = this.element.querySelector(ChatView.selectorExportBtn);
     const searchBtn = this.element.querySelector(ChatView.selectorSearchBtn);
@@ -148,10 +148,10 @@ class ChatView {
       const files = [...event.dataTransfer.files];
       const formData = this.prepareFiles(files);
       const {
-        result
+        messages
       } = await this.sendFiles(formData);
-      result.forEach(text => {
-        this.addMessageToChatAndScroll(this.messagesChat, text);
+      messages.forEach(message => {
+        this.addMessageToChatAndScroll(this.messagesChat, message);
       });
     });
     this.messagesChat.addEventListener('scroll', async () => {
@@ -161,21 +161,21 @@ class ChatView {
     });
     importBtn.addEventListener('change', async () => {
       const formData = this.prepareFiles([...importBtn.files]);
-      await fetch('https://chaosorganizer.onrender.com/import', {
+      await fetch(`${window.host}/import`, {
         method: 'POST',
         body: formData
       });
     });
     exportBtn.addEventListener('click', async () => {
       const filename = 'chaos-organizer-history.json';
-      const response = await fetch('https://chaosorganizer.onrender.com/export');
+      const response = await fetch(`${window.host}/export`);
       const json = await response.json();
       this.downloadObjectAsJson(json, filename);
     });
     searchBtn.addEventListener('click', () => searchInput.classList.toggle('show'));
     searchInput.addEventListener('input', async () => {
       if (searchInput.value.trim()) {
-        const response = await fetch(`https://chaosorganizer.onrender.com/search/${searchInput.value}`);
+        const response = await fetch(`${window.host}/search/${searchInput.value}`);
         const json = await response.json();
         const {
           messages
@@ -183,7 +183,7 @@ class ChatView {
         if (!messages.length) return;
         this.searchMessagesChat.innerHTML = '';
         messages.forEach(message => {
-          this.addMessageToChatAndScroll(this.searchMessagesChat, message.text);
+          this.addMessageToChatAndScroll(this.searchMessagesChat, message);
         });
         this.messagesChat.classList.add('d-none');
         this.favouritesMessagesChat.classList.add('d-none');
@@ -205,12 +205,11 @@ class ChatView {
         target.classList.toggle('active');
       }
       if (favouritesBtn.classList.contains('active')) {
-        const response = await fetch('https://chaosorganizer.onrender.com/favourites');
+        const response = await fetch(`${window.host}/favourites`);
         const json = await response.json();
         const {
           messages
         } = json;
-        if (!messages.length) return;
         this.favouritesMessagesChat.innerHTML = '';
         messages.forEach(message => {
           this.addMessageToChatAndScroll(this.favouritesMessagesChat, message);
@@ -237,7 +236,7 @@ class ChatView {
         target
       } = event;
       if (target.classList.contains('favourites-message')) {
-        await fetch(`https://chaosorganizer.onrender.com/favourites/${target.dataset.id}`, {
+        await fetch(`${window.host}/favourites/${target.dataset.id}`, {
           method: 'POST'
         });
       }
@@ -271,7 +270,7 @@ class ChatView {
     }
   }
   async loadMessages() {
-    const response = await fetch(`https://chaosorganizer.onrender.com/messages/${this.count}`);
+    const response = await fetch(`${window.host}/messages/${this.count}`);
     const {
       messages,
       noMoreData
@@ -294,7 +293,7 @@ class ChatView {
   // eslint-disable-next-line consistent-return,class-methods-use-this
   async sendFiles(formData) {
     try {
-      const response = await fetch('https://chaosorganizer.onrender.com/upload', {
+      const response = await fetch(`${window.host}/upload`, {
         method: 'POST',
         body: formData
       });
@@ -461,6 +460,11 @@ class ModalCustom extends (bootstrap_js_dist_modal__WEBPACK_IMPORTED_MODULE_0___
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ChatView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChatView */ "./src/js/ChatView.js");
 
+
+// window.hostWS = 'ws://localhost:3000';
+// window.host = 'http://localhost:3000';
+window.hostWS = 'wss://chaosorganizer.onrender.com';
+window.host = 'https://chaosorganizer.onrender.com';
 const app = document.querySelector('#app');
 const messages = new _ChatView__WEBPACK_IMPORTED_MODULE_0__["default"](app);
 messages.render();
