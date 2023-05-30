@@ -159,10 +159,10 @@ export default class ChatView {
 			event.preventDefault();
 			const files = [...event.dataTransfer.files];
 			const formData = this.prepareFiles(files);
-			const { result } = await this.sendFiles(formData);
+			const { messages } = await this.sendFiles(formData);
 
-			result.forEach((text) => {
-				this.addMessageToChatAndScroll(this.messagesChat, text);
+			messages.forEach((message) => {
+				this.addMessageToChatAndScroll(this.messagesChat, message);
 			});
 		});
 
@@ -194,7 +194,6 @@ export default class ChatView {
 				if (!messages.length) return;
 				this.searchMessagesChat.innerHTML = '';
 				messages.forEach((message) => {
-					console.log(message);
 					this.addMessageToChatAndScroll(this.searchMessagesChat, message);
 				});
 				this.messagesChat.classList.add('d-none');
